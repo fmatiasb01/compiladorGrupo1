@@ -80,7 +80,7 @@ public class AnalizadorLexico {
             TokenType tipo = PALABRAS_RESERVADAS.getOrDefault(ident, TokenType.IDENTIFIER);
             
             if (tipo == TokenType.IDENTIFIER && ident.length() > LONGITUD_MAX_IDENT) {
-                erroresLexicos.add(formatearError(lineaInicio, columnaInicio, "Identificador excede longitud máxima (" + LONGITUD_MAX_IDENT + ")."));
+                erroresLexicos.add(formatearError(lineaInicio, columnaInicio, "Identificador excede longitud maxima (" + LONGITUD_MAX_IDENT + ")."));
                 ident = ident.substring(0, LONGITUD_MAX_IDENT);
             }
             emitirToken(tipo, ident, lineaInicio, columnaInicio);
@@ -256,7 +256,7 @@ public class AnalizadorLexico {
                         }
                     }
                     if (!cerrado) {
-                        erroresLexicos.add(formatearError(lineaComentario, colComentario, "Comentario multilínea sin cierre."));
+                        erroresLexicos.add(formatearError(lineaComentario, colComentario, "Comentario multilinea sin cierre."));
                     }
                     continue;
                 }
@@ -301,7 +301,7 @@ public class AnalizadorLexico {
         while (!esFinDeArchivo() && verSiguiente() != '"') {
             char c = consumir();
             if (c == '\n') {
-                erroresLexicos.add(formatearError(lineaInicio, columnaInicio, "Cadena sin cierre en la misma línea."));
+                erroresLexicos.add(formatearError(lineaInicio, columnaInicio, "Cadena sin cierre en la misma linea."));
             }
             sb.append(c);
         }
@@ -320,7 +320,7 @@ public class AnalizadorLexico {
     // ==================================================
 
     private String formatearError(int l, int c, String desc) {
-        return "Error léxico [línea " + l + ", col " + c + "]: " + desc;
+        return "Error lexico [linea " + l + ", col " + c + "]: " + desc;
     }
 
     private String caracterImprimible(char c) {
