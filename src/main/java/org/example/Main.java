@@ -1,64 +1,54 @@
 package org.example;
 
-
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.NoSuchFileException;
+import java.io.IOException;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) { // <-- 'args' es la clave
         String codigoFuente;
+        String nombreArchivo; // <-- Variable para guardar el nombre del archivo
+
+        // --- MODIFICACIÓN CLAVE ---
         
+        // 1. Verificar si el profesor pasó un argumento
         if (args.length > 0) {
-            // Opción 1: Leer el código desde un archivo pasado como argumento
-            codigoFuente = Files.readString(Path.of(args[0]));
+            // Si lo hizo, ese es el archivo que compilaremos
+            nombreArchivo = args[0];
         } else {
-            // Opción 2: Usar un bloque de código de prueba si no se pasa archivo
-            // (He añadido casos de prueba léxicos, incluyendo errores)
-            codigoFuente = """
-                /* Programa de prueba para el Analizador Léxico.
-                */
-                    long contador, _sumaTotal;
-                    double promedio_final;
-                   
-                    read(contador); // Leer el límite
-                    _sumaTotal = 0;
-                   
-                        while (contador > 0 && !false) { // Prueba '&&' y '!'
-                            long valor_actual;
-                            read(valor_actual);
-                   
-                            if (valor_actual == 0) then
-                                break; // Prueba de 'break' y 'then'
-                   
-                                _sumaTotal += valor_actual; // Prueba de '+=
-                                contador = contador - 1;
-                                }
-                   
-                            /* Comprobación final con operadores relacionales */
-                            if (_sumaTotal <> 0) {
-                                promedio_final = _sumaTotal / 2.0; // Literal double
-                                write("El promedio es: ");
-                                write(promedio_final);
-                            } else {
-                                write("No se ingresaron números.");
-                            }
-                   
-                            // Prueba de identificador largo (debería dar error léxico)
-                                long este_es_un_identificador_muy_largo_que_supera_los_32_chars;
-                                   
-                            // Prueba de error de caracter (debería dar error léxico)
-                                double pi = 3.14;
-                                long invalido = pi % 2; // '%' no es un token válido en la especificación
-            """;
+            // Si no pasó ningún archivo.
+            System.err.println("ERROR: No se especificó un archivo fuente.");
+            System.err.println("Uso: java -jar suCompilador.jar <archivo.txt>");
+            return; // Salimos del programa
         }
+
+        // 2. Intentar leer el archivo que nos pasó el profesor
+        try {
+            codigoFuente = Files.readString(Path.of(nombreArchivo));
+            
+            System.out.println("--- Compilando archivo: " + nombreArchivo + " ---");
+            // No imprimimos el código fuente, solo los resultados.
+            System.out.println("----------------------------------------------\n");
+
+        } catch (NoSuchFileException e) {
+            System.err.println("ERROR: No se pudo encontrar el archivo '" + nombreArchivo + "'.");
+            System.err.println("Asegúrese de que el archivo exista y la ruta sea correcta.");
+            return;
+        } catch (IOException e) {
+            System.err.println("ERROR al leer el archivo: " + e.getMessage());
+            return;
+        }
+        // --- FIN DE LA MODIFICACIÓN ---
+
 
         // ======================================================
         // FASE 1: ANÁLISIS LÉXICO
+        // (Esta parte queda exactamente igual)
         // ======================================================
         
-        // Usamos nuestra clase traducida
         AnalizadorLexico lexer = new AnalizadorLexico(codigoFuente);
         List<Token> tokens = lexer.analizarTokens();
 
@@ -78,6 +68,12 @@ public class Main {
             lexer.getErrores().forEach(System.out::println);
         }
 
+        // ======================================================
+        // FASES FUTURAS (Comentadas)
+        // ======================================================
         
+        /*
+        (Aquí va el resto de tu código Main.java que tenías comentado...)
+        */
     }
 }
