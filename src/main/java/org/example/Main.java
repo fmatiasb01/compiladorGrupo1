@@ -20,7 +20,7 @@ public class Main {
             nombreArchivo = args[0];
         } else {
             // Si no pasó ningún archivo.
-            System.err.println("ERROR: No se especificó un archivo fuente.");
+            System.err.println("ERROR: No se especifico un archivo fuente.");
             System.err.println("Uso: java -jar suCompilador.jar <archivo.txt>");
             return; // Salimos del programa
         }
@@ -35,7 +35,7 @@ public class Main {
 
         } catch (NoSuchFileException e) {
             System.err.println("ERROR: No se pudo encontrar el archivo '" + nombreArchivo + "'.");
-            System.err.println("Asegúrese de que el archivo exista y la ruta sea correcta.");
+            System.err.println("Asegurese de que el archivo exista y la ruta sea correcta.");
             return;
         } catch (IOException e) {
             System.err.println("ERROR al leer el archivo: " + e.getMessage());
@@ -61,7 +61,7 @@ public class Main {
             }
         }
 
-        System.out.println("\n=== ERRORES LÉXICOS ===");
+        System.out.println("\n=== ERRORES LEXICOS ===");
         if (lexer.getErrores().isEmpty()) {
             System.out.println("(ninguno)");
         } else {
@@ -69,11 +69,80 @@ public class Main {
         }
 
         // ======================================================
-        // FASES FUTURAS (Comentadas)
+        // FASE 2: TABLA DE SÍMBOLOS (RECOLECCIÓN)
+        // ======================================================
+
+        // Usamos nuestras nuevas clases en español
+        RecolectorDeDeclaraciones recolector = new RecolectorDeDeclaraciones(tokens);
+        recolector.recolectar(); // Inicia el mini-parser
+
+        System.out.println("\n=== TABLA DE SIMBOLOS ===");
+        // Comprobamos si la tabla está vacía
+        if (recolector.getTablaSimbolos().obtenerTodos().isEmpty()) {
+            System.out.println("(vacia)");
+        } else {
+            // Imprimimos cabeceras que coinciden con el Simbolo.toString()
+            System.out.println("Nombre         | Tipo     | Ambito   | Linea | Valor");
+            System.out.println("---------------+----------+----------+-------+-------");
+            // Imprimimos cada símbolo
+            recolector.getTablaSimbolos().obtenerTodos().values().forEach(System.out::println);
+        }
+
+        // Imprimimos los errores sintácticos encontrados por el Recolector
+        System.out.println("\n=== ERRORES SINTACTICOS (declaraciones) ===");
+        if (recolector.getErrores().isEmpty()) {
+            System.out.println("(ninguno)");
+        } else {
+            recolector.getErrores().forEach(System.out::println);
+        }
+
+        // ======================================================
+        // FASE 3: PARSER (CONSTRUCCIÓN DEL AST)
         // ======================================================
         
-        /*
-        (Aquí va el resto de tu código Main.java que tenías comentado...)
-        */
+        AnalizadorSintactico parser = new AnalizadorSintactico(tokens);
+        List<Sentencia> sentencias = parser.analizar();
+
+        System.out.println("\n=== PARSER: SENTENCIAS (AST) ===");
+        if (sentencias.isEmpty()) {
+             System.out.println("(ninguna)");
+        } else {
+            for (Sentencia s : sentencias) {
+                System.out.println(s);
+            }
+        }
+
+        System.out.println("\n=== ERRORES SINTATICOS (parser) ===");
+        if (parser.getErrores().isEmpty()) {
+            System.out.println("(ninguno)");
+        } else {
+            parser.getErrores().forEach(System.out::println);
+        }
+        
+        
+        // ======================================================
+        // FASE 4: ANÁLISIS SEMÁNTICO
+        // ======================================================
+        
+        // Pasamos el AST (sentencias) y la Tabla de Símbolos al analizador
+        AnalizadorSemantico sema = new AnalizadorSemantico(sentencias, recolector.getTablaSimbolos());
+        sema.analizar(); 
+
+        System.out.println("\n=== ERRORES SEMANTICOS ===");
+        if (sema.getErrores().isEmpty()) {
+            System.out.println("(ninguno)");
+        } else {
+            sema.getErrores().forEach(System.out::println);
+        }
+        
+        // Volvemos a imprimir la tabla, esta vez con los valores actualizados
+        System.out.println("\n=== TABLA DE SIMBOLOS (post-semántico) ===");
+        if (recolector.getTablaSimbolos().obtenerTodos().isEmpty()) {
+            System.out.println("(vacia)");
+        } else {
+            System.out.println("Nombre         | Tipo     | Ambito   | Linea | Valor");
+            System.out.println("---------------+----------+----------+-------+-------");
+            recolector.getTablaSimbolos().obtenerTodos().values().forEach(System.out::println);
+        }
     }
 }
