@@ -1,0 +1,37 @@
+
+                /*
+                 * Ejemplo 2: Cálculo de promedio y prueba de tokens.
+                 * Este programa prueba la mayoría de las reglas léxicas.
+                 */
+                long contador, _sumaTotal;
+                double promedio_final;
+
+                read(contador); // Leer el límite
+                _sumaTotal = 0;
+
+                while (contador > 0 && !false) { // Prueba '&&' y '!'
+                    long valor_actual;
+                    read(valor_actual);
+
+                    if (valor_actual == 0) then
+                        break; // Prueba de 'break' y 'then'
+
+                    _sumaTotal += valor_actual; // Prueba de '+=
+                    contador = contador - 1;
+                }
+
+                /* Comprobación final con operadores relacionales */
+                if (_sumaTotal <> 0) {
+                    promedio_final = _sumaTotal / 2.0; // Literal double
+                    write("El promedio es: ");
+                    write(promedio_final);
+                } else {
+                    write("No se ingresaron números.");
+                }
+
+                // Prueba de identificador largo (debería dar error léxico)
+                long este_es_un_identificador_muy_largo_que_supera_los_32_chars;
+                
+                // Prueba de error de caracter (debería dar error léxico)
+                double pi = 3.14;
+                long invalido = pi % 2; // '%' no es un token válido en la especificación
