@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * Implementa un Analizador de Descenso Recursivo.
- * Su trabajo es tomar la lista de tokens y construir un
- * Árbol de Sintaxis Abstracta (AST) de Sentencias y Expresiones.
- */
+
 public class AnalizadorSintactico {
 
     private final List<Token> tokens;
@@ -22,13 +18,13 @@ public class AnalizadorSintactico {
     }
 
     /**
-     * Punto de entrada. Parsea una secuencia de sentencias hasta el Fin de Archivo (EOF).
+     *  Parsea una secuencia de sentencias hasta el Fin de Archivo (EOF).
      */
     public List<Sentencia> analizar() {
         List<Sentencia> sentencias = new ArrayList<>();
         while (!esFinDeArchivo()) {
 
-            // FASE 3 ignora las declaraciones de FASE 2
+            
             if (verificar(TokenType.KW_LONG) || verificar(TokenType.KW_DOUBLE)) {
                 saltarDeclaracion();
                 continue;
@@ -38,17 +34,12 @@ public class AnalizadorSintactico {
             if (s != null) {
                 sentencias.add(s);
             }
-            // A diferencia de otros parsers, no sincronizamos aquí.
-            // Cada método de sentencia es responsable de avanzar.
+            
         }
         return sentencias;
     }
 
-    /**
-     * Esta función avanza rápidamente sobre las declaraciones de variables
-     * (long ...; / double ...;) que ya fueron procesadas por el
-     * RecolectorDeclaraciones en la Fase 2.
-     */
+    
     private void saltarDeclaracion() {
         avanzar(); // Consumir el 'long' o 'double'
 
@@ -59,8 +50,7 @@ public class AnalizadorSintactico {
                     avanzar(); // Consumir el ID
                     esperarIdent = false;
                 } else {
-                    // Declaración mal formada, pero FASE 2 ya reportó el error.
-                    // Salimos y dejamos que el parser intente recuperarse.
+
                     return;
                 }
             } else {
@@ -69,7 +59,6 @@ public class AnalizadorSintactico {
                 } else if (coincidir(TokenType.SEMICOLON)) {
                     return; // Fin de la declaración
                 } else {
-                    // Hay "basura" (ej. long a b;), FASE 2 ya lo reportó.
                     // Avanzamos hasta el ';' para re-sincronizar.
                     avanzar();
                 }
@@ -260,7 +249,7 @@ public class AnalizadorSintactico {
         return expr;
     }
 
-    // equality -> comparison ( (== | != | <>) comparison )*
+    // equality -> comparasion ( (== | != | <>) comparison )*
     private Expresion igualdad() {
         Expresion expr = comparacion();
         while (coincidir(TokenType.EQEQ, TokenType.NEQ, TokenType.NEQ_ALT)) {

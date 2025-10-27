@@ -1,18 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Este "mini-parser" recorre los tokens una sola vez para
- * encontrar declaraciones de variables (long y double)
- * y poblar la Tabla de Símbolos.
- * * También detecta errores sintácticos básicos en las declaraciones.
- */
+
 public class RecolectorDeDeclaraciones {
 
     private final List<Token> tokens;
@@ -27,7 +19,7 @@ public class RecolectorDeDeclaraciones {
     }
 
     /**
-     * Inicia el proceso de recolección.
+     * proceso de recolección.
      */
     public void recolectar() {
         while (i < tokens.size()) {

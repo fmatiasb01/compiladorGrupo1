@@ -8,24 +8,24 @@ import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) { // <-- 'args' es la clave
+    public static void main(String[] args) {
         String codigoFuente;
-        String nombreArchivo; // <-- Variable para guardar el nombre del archivo
+        String nombreArchivo; 
 
-        // --- MODIFICACIÓN CLAVE ---
         
-        // 1. Verificar si el profesor pasó un argumento
+        
+        
         if (args.length > 0) {
-            // Si lo hizo, ese es el archivo que compilaremos
+            
             nombreArchivo = args[0];
         } else {
-            // Si no pasó ningún archivo.
+            
             System.err.println("ERROR: No se especifico un archivo fuente.");
             System.err.println("Uso: java -jar suCompilador.jar <archivo.txt>");
-            return; // Salimos del programa
+            return; 
         }
 
-        // 2. Intentar leer el archivo que nos pasó el profesor
+        
         try {
             codigoFuente = Files.readString(Path.of(nombreArchivo));
             
@@ -41,12 +41,10 @@ public class Main {
             System.err.println("ERROR al leer el archivo: " + e.getMessage());
             return;
         }
-        // --- FIN DE LA MODIFICACIÓN ---
 
 
         // ======================================================
         // FASE 1: ANÁLISIS LÉXICO
-        // (Esta parte queda exactamente igual)
         // ======================================================
         
         AnalizadorLexico lexer = new AnalizadorLexico(codigoFuente);
@@ -72,9 +70,9 @@ public class Main {
         // FASE 2: TABLA DE SÍMBOLOS (RECOLECCIÓN)
         // ======================================================
 
-        // Usamos nuestras nuevas clases en español
+        
         RecolectorDeDeclaraciones recolector = new RecolectorDeDeclaraciones(tokens);
-        recolector.recolectar(); // Inicia el mini-parser
+        recolector.recolectar(); //mini-parser
 
         System.out.println("\n=== TABLA DE SIMBOLOS ===");
         // Comprobamos si la tabla está vacía
@@ -97,13 +95,13 @@ public class Main {
         }
 
         // ======================================================
-        // FASE 3: PARSER (CONSTRUCCIÓN DEL AST)
+        // FASE 3: PARSER
         // ======================================================
         
         AnalizadorSintactico parser = new AnalizadorSintactico(tokens);
         List<Sentencia> sentencias = parser.analizar();
 
-        System.out.println("\n=== PARSER: SENTENCIAS (AST) ===");
+        System.out.println("\n=== PARSER: SENTENCIAS ===");
         if (sentencias.isEmpty()) {
              System.out.println("(ninguna)");
         } else {
@@ -135,8 +133,8 @@ public class Main {
             sema.getErrores().forEach(System.out::println);
         }
         
-        // Volvemos a imprimir la tabla, esta vez con los valores actualizados
-        System.out.println("\n=== TABLA DE SIMBOLOS (post-semántico) ===");
+        // Volvemos a imprimir la tabla, con los valores actualizados
+        System.out.println("\n=== TABLA DE SIMBOLOS (post-semantico) ===");
         if (recolector.getTablaSimbolos().obtenerTodos().isEmpty()) {
             System.out.println("(vacia)");
         } else {

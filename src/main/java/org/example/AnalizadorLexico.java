@@ -1,10 +1,7 @@
 
 package org.example;
 
-/**
- *
- * @author Nico
- */
+
 
 
 import java.util.ArrayList;

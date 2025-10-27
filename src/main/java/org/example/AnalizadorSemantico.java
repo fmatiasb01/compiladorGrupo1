@@ -3,12 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * FASE 4: Análisis Semántico.
- * Recorre el AST (generado por el AnalizadorSintactico) y usa
- * la TablaSimbolos (generada por el RecolectorDeclaraciones)
- * para encontrar errores de tipo y de lógica.
- */
+
 public class AnalizadorSemantico {
 
     private final List<Sentencia> sentencias;
@@ -34,15 +29,11 @@ public class AnalizadorSemantico {
 
     public List<String> getErrores() { return errores; }
 
-    /**
-     * Enum interno para el chequeo de tipos.
-     * Es independiente de 'TipoSimbolo' porque maneja tipos transitorios
-     * como BOOLEANO, CADENA y ERROR.
-     */
+   
     private enum TipoInterno { ENTERO, DECIMAL, CADENA, BOOLEANO, ERROR }
 
     // ===================================
-    // REVISIÓN DE SENTENCIAS (Stmt)
+    // REVISIÓN DE SENTENCIAS 
     // ===================================
 
     private void revisarSentencia(Sentencia s) {
@@ -148,7 +139,7 @@ public class AnalizadorSemantico {
     }
 
     // ===================================
-    // CHEQUEO DE TIPOS DE EXPRESIONES (Expr)
+    // CHEQUEO DE TIPOS DE EXPRESIONES 
     // ===================================
 
     /**
@@ -177,8 +168,6 @@ public class AnalizadorSemantico {
         if (e instanceof Expresion.Unaria u) {
             TipoInterno tipoDerecha = tipoDe(u.derecha);
             
-            // --- CORRECCIÓN ---
-            // 'u.op' ya es un TokenType
             if (u.op == TokenType.BANG) {
                 if (tipoDerecha == TipoInterno.BOOLEANO || tipoDerecha == TipoInterno.ENTERO || tipoDerecha == TipoInterno.DECIMAL) {
                     return TipoInterno.BOOLEANO;
@@ -186,7 +175,7 @@ public class AnalizadorSemantico {
                 errores.add(reportarError(e.linea, e.columna, "Operador '!' invalido sobre tipo " + tipoDerecha + "."));
                 return TipoInterno.ERROR;
             
-            // --- CORRECCIÓN ---
+
             } else if (u.op == TokenType.MINUS) {
                 if (esNumerico(tipoDerecha)) return tipoDerecha;
                 errores.add(reportarError(e.linea, e.columna, "Operador unario '-' requiere numerico (obtuvo " + tipoDerecha + ")."));
@@ -200,8 +189,7 @@ public class AnalizadorSemantico {
             TipoInterno tipoDer = tipoDe(b.derecha);
 
             // Lógicos: && ||
-            // --- CORRECCIÓN ---
-            // 'b.op' ya es un TokenType
+            
             if (b.op == TokenType.ANDAND || b.op == TokenType.OROR) {
                 if (tipoIzq == TipoInterno.BOOLEANO && tipoDer == TipoInterno.BOOLEANO) return TipoInterno.BOOLEANO;
                 // También se corrigió 'b.op.lexema' a solo 'b.op'
@@ -210,7 +198,7 @@ public class AnalizadorSemantico {
             }
 
             // Comparaciones: > < >= <= == != <>
-            // --- CORRECCIÓN ---
+            
             if (b.op == TokenType.GT || b.op == TokenType.LT || b.op == TokenType.GTE || b.op == TokenType.LTE
                     || b.op == TokenType.EQEQ || b.op == TokenType.NEQ || b.op == TokenType.NEQ_ALT) {
                 
@@ -222,7 +210,7 @@ public class AnalizadorSemantico {
             }
 
             // Aritméticos: + - * /
-            // --- CORRECCIÓN ---
+            
             if (b.op == TokenType.PLUS || b.op == TokenType.MINUS || b.op == TokenType.STAR || b.op == TokenType.SLASH) {
                 if (esNumerico(tipoIzq) && esNumerico(tipoDer)) {
                     if (tipoIzq == TipoInterno.DECIMAL || tipoDer == TipoInterno.DECIMAL) return TipoInterno.DECIMAL;
@@ -240,7 +228,7 @@ public class AnalizadorSemantico {
     }
 
     // ===================================
-    // MÉTODOS AYUDANTES (Helpers)
+    // MÉTODOS AYUDANTES
     // ===================================
 
     private boolean esNumerico(TipoInterno t) { 
@@ -248,7 +236,7 @@ public class AnalizadorSemantico {
     }
     
     private boolean esBooleano(TipoInterno t) {
-        // El modelo es estricto y solo permite BOOLEAN (no truthiness en 'if')
+        // El modelo es estricto y solo permite BOOLEAN 
         return t == TipoInterno.BOOLEANO; 
     }
 
