@@ -1,11 +1,6 @@
 
 package org.example;
 
-/**
- *
- * @author Nico
- */
-
 public enum TokenType {
     // Fin de archivo
     EOF,

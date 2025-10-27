@@ -1,12 +1,6 @@
 
 package org.example;
 
-/**
- *
- * @author Nico
- */
-
-
 public class Token {
     
     public final TokenType tipo;
